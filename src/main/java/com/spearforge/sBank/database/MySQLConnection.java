@@ -44,6 +44,12 @@ public class MySQLConnection extends DatabaseConnection{
             String sql2 = "CREATE TABLE IF NOT EXISTS debts (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), uuid VARCHAR(255), total DOUBLE, remaining DOUBLE, daily DOUBLE, last_payment_date VARCHAR(255))";
             st.execute(sql);
             st.execute(sql2);
+            st.executeUpdate("DELETE d1 FROM debts d1 INNER JOIN debts d2 ON d1.username = d2.username AND d1.id < d2.id");
+            try {
+                st.execute("CREATE UNIQUE INDEX debts_username_unique ON debts(username)");
+            } catch (SQLException ignored) {
+                // El índice ya existe.
+            }
             st.close();
     }
     @Override
@@ -172,7 +178,8 @@ public class MySQLConnection extends DatabaseConnection{
 
     @Override
     public void setDebtToDatabase(Debt debt) throws SQLException {
-        String query = "INSERT INTO debts (username, uuid, total, remaining, daily, last_payment_date) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO debts (username, uuid, total, remaining, daily, last_payment_date) VALUES (?, ?, ?, ?, ?, ?) "
+                + "ON DUPLICATE KEY UPDATE uuid=VALUES(uuid), total=VALUES(total), remaining=VALUES(remaining), daily=VALUES(daily), last_payment_date=VALUES(last_payment_date)";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, debt.getUsername());
         stmt.setString(2, debt.getUuid());

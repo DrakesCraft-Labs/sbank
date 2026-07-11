@@ -72,6 +72,7 @@ messages:
   loan-paid: "&6You have successfully paid &c%amount%$ &6towards your loan debt."
   loan-cancelled: "&6The loan process has been canceled."
   loan-disabled: "&cThe loan feature is currently disabled."
+  active-debt: "&cYa tienes un préstamo activo. Debes saldarlo antes de solicitar otro."
   loan-amount-error: "&cYou cannot loan more than &c%maxloan%$ or less than &c%minloan%$."
   debt-deducted: "&6An amount of &c%money%$&6 has been deducted from your bank account to pay off your debt."
   debt-cant-paid: "&cYour debt pay time has come and you don't have enough money to pay it. Your remaining debt has been increased by &c%money%$."
@@ -114,9 +115,9 @@ gui:
 # Loan Permission: sbank.loan
 loan:
   enabled: true # If you turn this false or true you need to restart the server to apply changes
-  max-loan: 1000000.0
+  max-loan: 250000.0
   min-loan: 1000.0
-  loan-interest: 10 # In percentage
+  loan-interest: 1 # Por día; durante 7 días equivale a 7% total.
   loan-term: 7
   debt-time: 12 # In hours debt will be deducted every 12 hours
 

@@ -41,6 +41,9 @@ public class SQLiteConnection extends DatabaseConnection {
 
         st.execute(sql);
         st.execute(sql2);
+        // Conserva la deuda más reciente y evita nuevas filas duplicadas.
+        st.executeUpdate("DELETE FROM debts WHERE id NOT IN (SELECT MAX(id) FROM debts GROUP BY username)");
+        st.execute("CREATE UNIQUE INDEX IF NOT EXISTS debts_username_unique ON debts(username)");
         st.close();
     }
 
@@ -194,7 +197,8 @@ public class SQLiteConnection extends DatabaseConnection {
 
     @Override
     public void setDebtToDatabase(Debt debt) throws SQLException {
-        String query = "INSERT INTO debts (username, uuid, total, remaining, daily, last_payment_date) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO debts (username, uuid, total, remaining, daily, last_payment_date) VALUES (?, ?, ?, ?, ?, ?) "
+                + "ON CONFLICT(username) DO UPDATE SET uuid=excluded.uuid, total=excluded.total, remaining=excluded.remaining, daily=excluded.daily, last_payment_date=excluded.last_payment_date";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, debt.getUsername());
             stmt.setString(2, debt.getUuid());
