@@ -23,7 +23,7 @@ gui:
   loan:
     loan-gui:
       name: "&7Loan Page"
-      material: "LEGACY_BOOK_AND_QUILL"
+      material: "WRITABLE_BOOK"
       lore:
           - "&7Click to open the loan page"
     # This is for the player which has already a debt(loan)
@@ -53,7 +53,7 @@ gui:
     # This is for the player which has not a debt yet :)
     available-loan:
       name: "&7New Loan Opportunity!"
-      material: "LEGACY_BOOK_AND_QUILL"
+      material: "WRITABLE_BOOK"
       lore:
         - "&7Maximum Loan: &f%max_loan%"
         - "&7Minimum Loan: &f%min_loan%"
@@ -64,7 +64,7 @@ gui:
         - "&7get your new loan!"
     agreement:
       name: "&7Agreement"
-      material: "LEGACY_BOOK_AND_QUILL"
+      material: "WRITABLE_BOOK"
       lore:
           - "&7Total Debt: &f%total_debt%"
           - "&7Payment: &f%every_payment%"

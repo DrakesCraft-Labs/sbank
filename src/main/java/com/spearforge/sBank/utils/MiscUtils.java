@@ -92,10 +92,21 @@ public class MiscUtils {
     }
 
     public static ItemStack getMaterialOrHead(String configPath){
+        String configuredMaterial = SBank.getGuiConfig().getString(configPath + ".material");
+        if (configuredMaterial == null || configuredMaterial.isBlank()) {
+            SBank.getPlugin().getLogger().warning("Missing GUI material at " + configPath + ".material; using BARRIER.");
+            return new ItemStack(Material.BARRIER);
+        }
+
         try {
-            return new ItemStack(Material.valueOf(SBank.getGuiConfig().getString(configPath + ".material")));
+            return new ItemStack(Material.valueOf(configuredMaterial.toUpperCase()));
         } catch (IllegalArgumentException e) {
-            return getCustomHead(SBank.getGuiConfig().getString(configPath + ".material"));
+            try {
+                return getCustomHead(configuredMaterial);
+            } catch (RuntimeException headError) {
+                SBank.getPlugin().getLogger().warning("Invalid GUI material at " + configPath + ".material: " + configuredMaterial + "; using BARRIER.");
+                return new ItemStack(Material.BARRIER);
+            }
         }
     }
 
