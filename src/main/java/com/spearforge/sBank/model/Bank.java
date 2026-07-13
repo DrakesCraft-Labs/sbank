@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.spearforge.sBank.utils.MoneyMath;
 
 @Data
 @AllArgsConstructor
@@ -27,12 +28,8 @@ public class Bank {
         return balance;
     }
 
-    /** Keeps the stored currency exact to cents without formatting or locale-dependent parsing. */
     public void setBalance(double balance) {
-        if (!Double.isFinite(balance) || balance < 0) {
-            throw new IllegalArgumentException("Bank balance must be finite and non-negative");
-        }
-        this.balance = Math.round(balance * 100.0D) / 100.0D;
+        this.balance = MoneyMath.normalize(balance);
     }
 
 }

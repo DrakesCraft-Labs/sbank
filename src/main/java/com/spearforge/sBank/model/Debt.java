@@ -3,6 +3,7 @@ package com.spearforge.sBank.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.spearforge.sBank.utils.MoneyMath;
 
 
 @Data
@@ -16,6 +17,18 @@ public class Debt {
     private double remaining;
     private double daily;
     private String lastPaymentDate;
+
+    public void setTotal(double total) {
+        this.total = MoneyMath.normalize(total);
+    }
+
+    public void setRemaining(double remaining) {
+        this.remaining = MoneyMath.normalize(remaining);
+    }
+
+    public void setDaily(double daily) {
+        this.daily = MoneyMath.normalize(daily);
+    }
 
     @Override
     public String toString() {
