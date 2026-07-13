@@ -120,7 +120,7 @@
             <version>1.7</version>
             <scope>provided</scope>
             <exclusions>
-                <!-- Paper supplies the server API; Vault's old Bukkit transitive must not shadow it. -->
+                <!-- Vault 1.7 declares Bukkit 1.13; Paper supplies the current API. -->
                 <exclusion>
                     <groupId>org.bukkit</groupId>
                     <artifactId>bukkit</artifactId>

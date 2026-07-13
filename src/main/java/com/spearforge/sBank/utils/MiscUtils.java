@@ -80,7 +80,10 @@ public class MiscUtils {
         }
 
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "sbank");
+        if (headMeta == null) return head;
+
+        // Paper maintains this profile API across Minecraft mappings; no reflective NMS access.
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
         profile.setProperty(new ProfileProperty("textures", base64));
         headMeta.setPlayerProfile(profile);
 
