@@ -19,6 +19,9 @@ public abstract class DatabaseConnection {
 
     public abstract Bank getBank(String username) throws SQLException;
 
+    /** Returns every persisted account so scheduled economy rules include offline players. */
+    public abstract List<Bank> getAllBanks() throws SQLException;
+
     public abstract boolean hasBank(String username) throws SQLException;
 
     public abstract void loadDebtsFromDatabase() throws SQLException;

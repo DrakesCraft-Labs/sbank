@@ -11,6 +11,7 @@ import com.spearforge.sBank.model.Bank;
 import com.spearforge.sBank.model.Debt;
 import com.spearforge.sBank.modules.DebtModule;
 import com.spearforge.sBank.modules.InterestModule;
+import com.spearforge.sBank.modules.WealthTaxScheduler;
 import com.spearforge.sBank.utils.MiscUtils;
 import com.spearforge.sBank.utils.TextUtils;
 import lombok.Getter;
@@ -26,6 +27,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public final class SBank extends JavaPlugin {
 
@@ -57,6 +60,7 @@ public final class SBank extends JavaPlugin {
 
         plugin = this;
         saveDefaultConfig();
+        ensureWealthTaxDefaults();
         auditLogger = new BankAuditLogger(this);
         guiConfig = new CustomFileConfiguration(this, "gui.yml");
         guiConfig.createConfig();
@@ -74,6 +78,11 @@ public final class SBank extends JavaPlugin {
         if (getConfig().getBoolean("loan.enabled")){
             startDebtCheckScheduler();
             getLogger().info("Loan module is active and debt scheduler is started.");
+        }
+
+        if (getConfig().getBoolean("wealth-tax.enabled", false)) {
+            startWealthTaxScheduler();
+            getLogger().info("Wealth tax module is active and scheduler is started.");
         }
 
         setListeners();
@@ -218,6 +227,38 @@ public final class SBank extends JavaPlugin {
                 }
             }
         }.runTaskTimer(plugin, 600L, 1200L);
+    }
+
+    /** Migrates existing installations without overwriting an administrator's economy policy. */
+    private void ensureWealthTaxDefaults() {
+        if (getConfig().contains("wealth-tax")) {
+            return;
+        }
+        getConfig().set("wealth-tax.enabled", true);
+        getConfig().set("wealth-tax.interval-hours", 24);
+        getConfig().set("wealth-tax.protected-balance", 500_000D);
+        getConfig().set("wealth-tax.maximum-charge-per-cycle", 250_000D);
+        getConfig().set("wealth-tax.exempt-usernames", new ArrayList<String>());
+        getConfig().set("wealth-tax.last-run", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now()));
+        getConfig().set("wealth-tax.message", "&6[DrakesBank] &eImpuesto bancario aplicado: &c-%money%");
+        getConfig().set("wealth-tax.tiers.first.up-to", 1_000_000D);
+        getConfig().set("wealth-tax.tiers.first.rate-percent", 0.5D);
+        getConfig().set("wealth-tax.tiers.second.up-to", 5_000_000D);
+        getConfig().set("wealth-tax.tiers.second.rate-percent", 1D);
+        getConfig().set("wealth-tax.tiers.high.up-to", -1D);
+        getConfig().set("wealth-tax.tiers.high.rate-percent", 2D);
+        saveConfig();
+    }
+
+    public void startWealthTaxScheduler() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (WealthTaxScheduler.isDue()) {
+                    WealthTaxScheduler.apply();
+                }
+            }
+        }.runTaskTimer(this, 1200L, 1200L);
     }
 
     public void setCommands(){

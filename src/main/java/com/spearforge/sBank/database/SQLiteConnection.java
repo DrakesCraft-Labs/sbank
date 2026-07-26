@@ -99,6 +99,23 @@ public class SQLiteConnection extends DatabaseConnection {
     }
 
     @Override
+    public List<Bank> getAllBanks() throws SQLException {
+        List<Bank> banks = new ArrayList<>();
+        try (Statement statement = getConnection().createStatement();
+             ResultSet result = statement.executeQuery("SELECT username, uuid, balance, bankname FROM banks")) {
+            while (result.next()) {
+                Bank bank = new Bank();
+                bank.setUsername(result.getString("username"));
+                bank.setUuid(result.getString("uuid"));
+                bank.setBalance(result.getDouble("balance"));
+                bank.setBankname(result.getString("bankname"));
+                banks.add(bank);
+            }
+        }
+        return banks;
+    }
+
+    @Override
     public boolean hasBank(String username) {
         String sql = "SELECT * FROM banks WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

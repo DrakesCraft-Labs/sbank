@@ -131,6 +131,30 @@ interest:
   last-interest-date: "2024-10-07 20:49:00" # Last interest info, DO NOT TOUCH, this will be change automatically
   interest-message: "&6You got %interest% interest to your bank account."
 
+# Progressive tax over stored bank balances. It never touches wallet, inventory or physical money.
+# The first cycle is scheduled after a full interval so enabling the module cannot charge on startup.
+wealth-tax:
+  enabled: true
+  interval-hours: 24
+  protected-balance: 500000.0
+  maximum-charge-per-cycle: 250000.0
+  exempt-usernames: []
+  last-run: "2026-07-26 00:00:00"
+  message: "&6[DrakesBank] &eImpuesto bancario aplicado: &c-%money%"
+  tiers:
+    first:
+      # 0.5% over the protected balance, up to 1,000,000 taxable currency.
+      up-to: 1000000.0
+      rate-percent: 0.5
+    second:
+      # 1% over the next 4,000,000 taxable currency.
+      up-to: 5000000.0
+      rate-percent: 1.0
+    high:
+      # 2% of any remaining taxable wealth.
+      up-to: -1
+      rate-percent: 2.0
+
 npc-bankers:
   enabled: false
   npc-id: 0
