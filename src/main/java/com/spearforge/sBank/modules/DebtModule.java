@@ -75,6 +75,7 @@ public class DebtModule {
         double wallet = SBank.getEcon().getBalance(player);
         SBank.getAuditLogger().record("DEBT_AUTO_PAYMENT", player.getName(), player.getUniqueId().toString(), payment,
                 wallet, wallet, bankBefore, SBank.getBanks().get(player.getName()).getBalance(), "remaining-debt=" + (debtBefore - payment));
+        EconomyReserve.credit(payment);
 
         if (SBank.getDebts().get(player.getName()).getRemaining() <= 0){
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.debt-paid").replaceAll("%money%", MiscUtils.formatBalance(SBank.getDebts().get(player.getName()).getTotal())));
@@ -105,6 +106,7 @@ public class DebtModule {
         double bank = SBank.getBanks().get(player.getName()).getBalance();
         SBank.getAuditLogger().record("DEBT_WALLET_PAYMENT", player.getName(), player.getUniqueId().toString(), payment,
                 walletBefore, SBank.getEcon().getBalance(player), bank, bank, "remaining-debt=" + (debtBefore - payment));
+        EconomyReserve.credit(payment);
 
         if (SBank.getDebts().get(player.getName()).getRemaining() <= 0){
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.debt-paid").replaceAll("%money%", MiscUtils.formatBalance(SBank.getDebts().get(player.getName()).getTotal())));

@@ -2,6 +2,7 @@ package com.spearforge.sBank.listener;
 
 import com.spearforge.sBank.SBank;
 import com.spearforge.sBank.model.Debt;
+import com.spearforge.sBank.modules.EconomyReserve;
 import com.spearforge.sBank.utils.MiscUtils;
 import com.spearforge.sBank.utils.TextUtils;
 import lombok.Getter;
@@ -92,6 +93,16 @@ public class LoanGuiListener implements Listener {
 
     private void agreeLoan(Player player) {
         Debt debt = loanAgree.get(player.getName());
+        double loan = loanAmount.get(player.getName());
+        if (!EconomyReserve.allocateLoan(loan)) {
+            TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString(
+                    "messages.loan-reserve-insufficient", "&cEl fondo de préstamos no tiene saldo suficiente. Intenta más tarde."));
+            loanAgree.remove(player.getName());
+            loanAmount.remove(player.getName());
+            manuallyClosed.put(player.getName(), true);
+            player.closeInventory();
+            return;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.now();
         String dateFormatted = dateTime.format(formatter);
@@ -107,10 +118,12 @@ public class LoanGuiListener implements Listener {
         try {
             SBank.getDb().setDebtToDatabase(debt);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            EconomyReserve.restoreLoan(loan);
+            SBank.getDebts().remove(player.getName());
+            TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.transaction-failed"));
+            return;
         }
 
-        double loan = loanAmount.get(player.getName());
         double bankBefore = SBank.getBanks().get(player.getName()).getBalance();
         SBank.getBanks().get(player.getName()).setBalance(bankBefore + loan);
         double wallet = SBank.getEcon().getBalance(player);

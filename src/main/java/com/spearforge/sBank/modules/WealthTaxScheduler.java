@@ -65,6 +65,7 @@ public final class WealthTaxScheduler {
                 }
                 SBank.getAuditLogger().record("WEALTH_TAX", bank.getUsername(), bank.getUuid(), charge,
                         0, 0, before, bank.getBalance(), "protected-balance=" + protectedBalance);
+                EconomyReserve.credit(charge);
                 chargedAccounts++;
                 totalCollected += charge;
             }

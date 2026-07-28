@@ -131,6 +131,12 @@ interest:
   last-interest-date: "2024-10-07 20:49:00" # Last interest info, DO NOT TOUCH, this will be change automatically
   interest-message: "&6You got %interest% interest to your bank account."
 
+# Reserve funded by progressive wealth contributions and real debt repayments.
+# New loans cannot mint money: they are granted only when this reserve has funds.
+economy-reserve:
+  balance: 0.0
+  reserve-backed-loans: true
+
 # Progressive tax over stored bank balances. It never touches wallet, inventory or physical money.
 # The first cycle is scheduled after a full interval so enabling the module cannot charge on startup.
 wealth-tax:

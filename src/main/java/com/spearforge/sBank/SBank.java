@@ -10,6 +10,7 @@ import com.spearforge.sBank.listener.*;
 import com.spearforge.sBank.model.Bank;
 import com.spearforge.sBank.model.Debt;
 import com.spearforge.sBank.modules.DebtModule;
+import com.spearforge.sBank.modules.EconomyReserve;
 import com.spearforge.sBank.modules.InterestModule;
 import com.spearforge.sBank.modules.WealthTaxScheduler;
 import com.spearforge.sBank.utils.MiscUtils;
@@ -190,6 +191,7 @@ public final class SBank extends JavaPlugin {
                              double bankBefore = bank.getBalance();
                              bank.setBalance(bank.getBalance() - payment);
                              debt.setRemaining(debt.getRemaining() - payment);
+                             EconomyReserve.credit(payment);
                              auditLogger.record("DEBT_AUTO_PAYMENT", debt.getUsername(), debt.getUuid(), payment,
                                      0, 0, bankBefore, bank.getBalance(), "offline remaining-debt=" + debt.getRemaining());
                              try {
