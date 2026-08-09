@@ -29,6 +29,9 @@ public class Bank {
     }
 
     public void setBalance(double balance) {
+        if (balance < 0) {
+            throw new IllegalArgumentException("Bank balance cannot be negative");
+        }
         this.balance = MoneyMath.normalize(balance);
     }
 
