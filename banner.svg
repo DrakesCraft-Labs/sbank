@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 240" width="920" height="240" role="img" aria-label="sbank Banner">
+  <defs>
+    <linearGradient id="bFondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="acG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#FCA5A5"/>
+    </linearGradient>
+    <radialGradient id="bHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="920" height="240" rx="16" fill="url(#bFondo)"/>
+  <rect width="920" height="240" rx="16" fill="url(#bHalo)"/>
+  <rect x="2" y="2" width="916" height="236" rx="14" fill="none" stroke="url(#acG)" stroke-width="2" opacity="0.4"/>
+  
+  <g transform="translate(460,70) scale(1.6)">
+<rect x="-24" y="-24" width="48" height="48" rx="8" fill="none" stroke="url(#acG)" stroke-width="4"/><circle cx="0" cy="0" r="10" fill="#EF4444"/>
+  </g>
+  
+  <text x="460" y="152" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-weight="900" font-size="28" fill="#F8FAFC" letter-spacing="2">
+    SBANK
+  </text>
+  <text x="460" y="184" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-weight="700" font-size="12" fill="#FCA5A5" letter-spacing="3" opacity="0.9">
+    SLIMEFUN4 ADDON · SBANK
+  </text>
+  
+  <g transform="translate(460, 210)">
+    <rect x="-180" y="-12" width="110" height="20" rx="4" fill="#1E293B" stroke="#EF4444" stroke-width="1"/>
+    <text x="-125" y="2" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#E2E8F0">DRAKES LABS</text>
+    
+    <rect x="-55" y="-12" width="110" height="20" rx="4" fill="#1E293B" stroke="#FCA5A5" stroke-width="1"/>
+    <text x="0" y="2" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#E2E8F0">PAPER 1.21.11</text>
+    
+    <rect x="70" y="-12" width="110" height="20" rx="4" fill="#1E293B" stroke="#EF4444" stroke-width="1"/>
+    <text x="125" y="2" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="700" fill="#E2E8F0">JAVA 21</text>
+  </g>
+</svg>
