@@ -95,3 +95,13 @@ The resulting plugin is generated in `target/`.
 ## License and Upstream
 
 This repository is a fork of [xenrivehub/sbank](https://github.com/xenrivehub/sbank). Keep upstream license notices intact when redistributing changes.
+
+## ⚖️ Upstream Attribution & License / Licencia y Créditos
+
+- **Original Project / Upstream**: Slimefun4 Community Addon.
+- **Port & Maintenance**: DrakesCraft Labs team (Compatibility for Paper / Purpur 1.21.11).
+- **License**: GPL-3.0 / MIT.
+- **Source Code**: [GitHub Repository](https://github.com/DrakesCraft-Labs/sbank)
+- **Support & Issues**: [GitHub Issues](https://github.com/DrakesCraft-Labs/sbank/issues) | [Discord](https://discord.gg/rR7FbfCt9Y)
+
+*This project is an open-source derivative work maintained by DrakesCraft Labs under the terms of its original license. All original assets and concepts belong to their respective creators.*
