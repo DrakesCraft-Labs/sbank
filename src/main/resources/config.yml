@@ -61,7 +61,7 @@ messages:
   inventory-full: "&cYour inventory is full. Please make some space and try again."
   invalid-money-pile: "&cThis is not a valid money pile."
   money-pile-redeemed: "&6You've successfully redeemed &c%money_pile%&6 from the money pile."
-  enter-amount: "&6Please enter the amount you wish to proceed with."
+  enter-amount: "&6Please enter the amount you wish to proceed with. &7(or type &eall&7)"
   custom-amount-not-set: "&cThe session has been canceled."
   bank-name-not-set: "&cYou exited the bank name setting session."
   bank-name-invalid: "&6Bank name can only contain letters and numbers. Do not use special characters. (to close type 'close')"

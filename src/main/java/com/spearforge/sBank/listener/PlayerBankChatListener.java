@@ -107,13 +107,12 @@ public class PlayerBankChatListener implements Listener {
 
     private void handleDeposit(Player player, String message) {
         String playerName = player.getName();
-        if (!MiscUtils.isNumeric(message)) {
+        double walletBefore = SBank.getEcon().getBalance(player);
+        double amount = resolverCantidad(message, walletBefore);
+        if (amount < 0) {
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.invalid-amount"));
             return;
         }
-
-        double amount = Double.parseDouble(message);
-        double walletBefore = SBank.getEcon().getBalance(player);
         if (walletBefore < amount) {
             BankGuiListener.getCustomDepAmount().remove(playerName);
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.not-enough-money"));
@@ -144,13 +143,12 @@ public class PlayerBankChatListener implements Listener {
 
     private void handleWithdraw(Player player, String message) {
         String playerName = player.getName();
-        if (!MiscUtils.isNumeric(message)) {
+        Bank bank = SBank.getBanks().get(playerName);
+        double amount = resolverCantidad(message, bank.getBalance());
+        if (amount < 0) {
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.invalid-amount"));
             return;
         }
-
-        double amount = Double.parseDouble(message);
-        Bank bank = SBank.getBanks().get(playerName);
         if (bank.getBalance() < amount) {
             BankGuiListener.getCustomWithAmount().remove(playerName);
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.not-enough-money"));
@@ -181,13 +179,12 @@ public class PlayerBankChatListener implements Listener {
 
     private void handlePhysicalWithdraw(Player player, String message) {
         String playerName = player.getName();
-        if (!MiscUtils.isNumeric(message)) {
+        Bank bank = SBank.getBanks().get(playerName);
+        double amount = resolverCantidad(message, bank.getBalance());
+        if (amount < 0) {
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.invalid-amount"));
             return;
         }
-
-        double amount = Double.parseDouble(message);
-        Bank bank = SBank.getBanks().get(playerName);
         if (bank.getBalance() < amount) {
             BankGuiListener.getCustomPhysicalWithAmount().remove(playerName);
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.not-enough-money"));
@@ -224,13 +221,14 @@ public class PlayerBankChatListener implements Listener {
 
     private void handleDebtPayment(Player player, String message) {
         String playerName = player.getName();
-        if (!MiscUtils.isNumeric(message)) {
+        double remaining = SBank.getDebts().get(playerName).getRemaining();
+        // "todo" aqui es saldar la deuda, pero sin pasarse de lo que lleva encima.
+        double amount = resolverCantidad(message,
+                Math.min(remaining, SBank.getEcon().getBalance(player)));
+        if (amount < 0) {
             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.invalid-amount"));
             return;
         }
-
-        double amount = Double.parseDouble(message);
-        double remaining = SBank.getDebts().get(playerName).getRemaining();
         double minimumPayment = Math.min(SBank.getDebts().get(playerName).getDaily(), remaining);
         if (amount >= minimumPayment && SBank.getEcon().getBalance(player) >= amount) {
             DebtModule.payDebtFromBalance(player, amount);
@@ -243,5 +241,31 @@ public class PlayerBankChatListener implements Listener {
     private void sendTransactionFailed(Player player) {
         TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString(
                 "messages.transaction-failed", "&cThe transaction could not be completed."));
+    }
+
+    /**
+     * Traduce lo que escribio el jugador a una cantidad.
+     *
+     * <p>Acepta un numero, o una palabra que signifique "todo": {@code all},
+     * {@code todo}, {@code max} o {@code *}. Pedirlo lo pidio un jugador, y la
+     * razon es buena: sin esto hay que mirar el saldo, memorizarlo y teclearlo
+     * entero, y con saldos de siete cifras se falla y se deja dinero suelto.
+     *
+     * @param entrada lo que escribio en el chat
+     * @param maximo  el techo de esta operacion: el monedero al depositar, el
+     *                banco al retirar, la deuda al pagar
+     * @return la cantidad, o {@code -1} si no se entiende
+     */
+    private double resolverCantidad(String entrada, double maximo) {
+        if (entrada == null) return -1;
+        String limpio = entrada.trim();
+        if (limpio.equalsIgnoreCase("all") || limpio.equalsIgnoreCase("todo")
+                || limpio.equalsIgnoreCase("max") || limpio.equals("*")) {
+            // Se recorta a dos decimales hacia abajo: pedir mas de lo que hay por
+            // un redondeo haria fallar la transaccion justo en el caso comodo.
+            return Math.floor(Math.max(0, maximo) * 100.0) / 100.0;
+        }
+        if (!MiscUtils.isNumeric(limpio)) return -1;
+        return Double.parseDouble(limpio);
     }
 }
