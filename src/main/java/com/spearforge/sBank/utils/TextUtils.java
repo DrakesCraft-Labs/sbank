@@ -41,8 +41,8 @@ public class TextUtils {
         String interest = "";
         String currencySymbol = SBank.getPlugin().getConfig().getString("currency-symbol");
         if (SBank.getPlugin().getConfig().getBoolean("interest.enabled")){
-            double _interest = SBank.getPlugin().getConfig().getInt("interest.default-interest-rate", 
-                                                           SBank.getPlugin().getConfig().getInt("interest.interest-rate"));
+            double _interest = SBank.getPlugin().getConfig().getDouble("interest.default-interest-rate",
+                    SBank.getPlugin().getConfig().getDouble("interest.interest-rate"));
             interest = "" + _interest + "%";
             if(bank != null) {
                 Player p = Bukkit.getPlayer(bank.getUsername());

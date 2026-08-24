@@ -19,22 +19,31 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MiscUtils {
     private static final String PHYSICAL_MONEY_MARKER = "sbank_physical_money_v1";
+    private static final Pattern CUSTOM_INTEREST_PERMISSION =
+            Pattern.compile("^sbank\\.interest\\.(\\d+(?:\\.\\d+)?)$");
     
     public static double getInterest(Player player, double _interest) {
-        Pattern pattern = Pattern.compile("^sbank\\.interest\\.(\\d+)$"); // sbank.interest.<percent>
+        if (player == null) return _interest;
 
-        return player.getEffectivePermissions().stream()
-            .map(PermissionAttachmentInfo::getPermission)
-            .map(pattern::matcher)
-            .filter(Matcher::matches) 
-            .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
-            .max()
-            .orElse((int) _interest);
+        return resolveInterestRate(player.getEffectivePermissions().stream()
+                .filter(PermissionAttachmentInfo::getValue)
+                .map(PermissionAttachmentInfo::getPermission), _interest);
+    }
+
+    /** Resolves the highest enabled decimal interest override without truncating the configured rate. */
+    static double resolveInterestRate(Stream<String> permissions, double defaultInterest) {
+        return permissions
+                .map(CUSTOM_INTEREST_PERMISSION::matcher)
+                .filter(Matcher::matches)
+                .mapToDouble(matcher -> Double.parseDouble(matcher.group(1)))
+                .max()
+                .orElse(defaultInterest);
     }
 
 
