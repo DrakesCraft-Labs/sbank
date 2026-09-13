@@ -1,169 +1,130 @@
-# Database Settings
-# If you don't know what is this, you can ask in our discord server to get help from community.
-# When you decide to change from sqlite to mysql or mysql to sqlite. You don't need to restart but for safety, you can restart the server after change.
-# If you are using sqlite you don't need to do anything here, just use it.
+# sBank — configurado para DrakesCraft
+# Docs: https://github.com/xenrivehub/sbank
+
 database:
-  type: sqlite # mysql or sqlite
-  host: host_ip
+  type: sqlite
+  host: localhost
   port: 3306
   name: sbank
-  username: database_username
-  password: database_password
+  username: root
+  password: ''
 
-# Settings related to auto-save functionality
+# Guardado automático de cuentas y deudas en base de datos
 auto-save: 
-  save-interval: 15 # The delay (in minutes) between each auto-save operation (Needs restart)
+  save-interval: 15
   log-settings:
-    enabled: true # Enable or disable logging for auto-save operations (true / false)
-    message: "All banks and debts saved to the database." # Message to log upon successful save
+    enabled: true
+    message: "&6[DrakesBank]&a Todas las cuentas y deudas se guardaron correctamente."
 
-# One JSON record is written for every bank movement. Files are stored under
-# plugins/sBank/audit and are intended for staff review, not console spam.
+# Registro de auditoría JSON
 audit:
   enabled: true
   directory: "audit"
 
-# Default bank name, when player first join to server they will have a bank account with this name
-default-bank-name: "My Bank"
-# Maximum bank name length
-bank-name-length: 12
-# Start money when they create a bank account
+default-bank-name: "Mi Banco"
+bank-name-length: 16
 start-money: 0
-# You can change this to any currency you want like "€" or "₺" etc. Currency will show up in GUIs and messages. Ex. 100$ or 100€
-currency-symbol: "$"
+currency-symbol: "₯"
 
-# If you want to player lose their money after death with percentage you can set this to true
-# Even its true they will not lose money if they have permission "sbank.dontlosemoney"
-# Also they will not lose money if they have 0 money
-# Also they will not lose money if they killed by a Player (like maybe they are in a PVP arena)
-lose-money-after-death: true
-# Percentage of money that player will lose when they die 10 = 10%
-after-death-percentage: 10
-# Message that will be sent to player after they die
-after-death-message: "&6Wow you just lost &c%money%$ &6because of death. You should consider to deposit your money to bank."
+# --- PENALIZACIÓN POR MUERTE -----------------------------
+# El dinero en el banco (depositado) está SEGURO siempre.
+# Opción A (Sugerencia #1): Desactivado cobro por muerte ambiental/caída.
+lose-money-after-death: false
+after-death-percentage: 0
+after-death-message: '&c¡Moriste! Tu dinero en mano está seguro. Recuerda usar el banco (/sb) para mayor comodidad.'
 
-# All messages for bank and debt system. I know a bit messy, but you can change all messages in the plugin as you wish.
-# If you lose placeholders like %money% you can ask in our discord server to get help from community.
 messages:
-  prefix: "&6[&cSBank&6] &r"
-  no-permission: "&cYou don't have permission to do this."
-  invalid-argument: "&cInvalid argument. Please use &6/sbank help &cfor more information."
-  player-not-found: "&cPlayer not found."
-  no-debt-found: "&cCan't found any debt"
-  plugin-reloaded: "&6Plugin has been reloaded successfully."
-  no-bank-account: "&cYou don't have a bank account yet. You can create one by rejoining the server."
-  setting-bank-name: "&6Bank name can only contain letters and numbers. No special characters allowed, and it must be at most &c12 characters long &6(including spaces). Please enter a new bank name."
-  bank-name-set: "&6Your bank name has been successfully set to &c%bankname%."
-  not-enough-money: "&cYou don't have enough money to complete this action."
-  deposit-success: "&6You've successfully deposited &c%money%$&6 into your bank account."
-  withdraw-success: "&6You've successfully withdrawn &c%money%$&6 from your bank account."
-  physical-withdraw-success: "&6You've successfully withdrawn &c%money%&6 from your bank account as pile of money to your inventory."
-  inventory-full: "&cYour inventory is full. Please make some space and try again."
-  invalid-money-pile: "&cThis is not a valid money pile."
-  money-pile-redeemed: "&6You've successfully redeemed &c%money_pile%&6 from the money pile."
-  enter-amount: "&6Please enter the amount you wish to proceed with. &7(or type &eall&7)"
-  custom-amount-not-set: "&cThe session has been canceled."
-  bank-name-not-set: "&cYou exited the bank name setting session."
-  bank-name-invalid: "&6Bank name can only contain letters and numbers. Do not use special characters. (to close type 'close')"
-  loan-amount: "&6Please enter the amount you wish to loan. The maximum loan amount is &c%maxloan%$&6 and the minimum loan amount is &c%minloan%$. &oTo cancel, type cancel."
-  loan-agreement: "&6You will be charged &c%interest%$ interest for every &c%term% hours&6. Are you sure you want to loan &c%amount%$?"
-  loan-success: "&6You have successfully taken out a loan of &c%amount%$&6 from the bank. You will pay &c%interest%$ interest every &c%term% &6hours. Check your debt with the &c/debt&6 command."
-  loan-failed: "&cYou have canceled the loan process."
-  loan-paid: "&6You have successfully paid &c%amount%$ &6towards your loan debt."
-  loan-cancelled: "&6The loan process has been canceled."
-  loan-disabled: "&cThe loan feature is currently disabled."
-  active-debt: "&cYa tienes un préstamo activo. Debes saldarlo antes de solicitar otro."
-  loan-amount-error: "&cYou cannot loan more than &c%maxloan%$ or less than &c%minloan%$."
-  debt-deducted: "&6An amount of &c%money%$&6 has been deducted from your bank account to pay off your debt."
-  debt-cant-paid: "&cYour debt pay time has come and you don't have enough money to pay it. Your remaining debt has been increased by &c%money%$."
-  debt-payment-success: "&6You successfully paid &c%money%$&6 towards your debt."
-  debt-paid: "&6Your debt of &c%money%$&6 has been fully paid off. You are now debt-free and can take out another loan."
-  invalid-amount: "&cThe amount entered is invalid."
-  transaction-failed: "&cThe transaction could not be completed. Try again in a moment."
-  less-then-daily: "&cYou cannot pay less than the daily minimum of &c%daily%&6 for your debt."
+  prefix: '&6[&cDrakesBank&6] &r'
+  no-permission: '&cNo tienes permiso para hacer esto.'
+  plugin-reloaded: '&aPlugin recargado correctamente.'
+  no-bank-account: '&cNo tienes cuenta bancaria. Se creará automáticamente al reingresar.'
+  setting-bank-name: '&6El nombre del banco solo puede tener letras y números (máx. 16 caracteres). Escribe el nuevo nombre:'
+  bank-name-set: '&aNombre del banco cambiado a &e%bankname%.'
+  not-enough-money: '&cNo tienes suficiente dinero para completar esta acción.'
+  deposit-success: '&aDepositaste &e%money%₯ &aen tu banco.'
+  withdraw-success: '&aRetiraste &e%money%₯ &ade tu banco.'
+  enter-amount: '&6Ingresa la cantidad a procesar:'
+  custom-amount-not-set: '&cSesión cancelada.'
+  bank-name-not-set: '&cSaliste sin cambiar el nombre.'
+  bank-name-invalid: '&cNombre inválido. Solo letras y números. (escribe ''close'' para cancelar)'
+  loan-amount: '&6Ingresa el monto del préstamo. Mínimo &e%minloan%₯ &6y Máximo &e%maxloan%₯. &o(escribe ''cancel'' para cancelar)'
+  loan-agreement: '&6Se te cobrará &c%interest%₯ de interés cada &c%term% horas. ¿Confirmas el préstamo de &e%amount%₯?'
+  loan-success: '&aPréstamo aprobado: &e%amount%₯. &aPagarás &c%interest%₯ de interés cada &c%term% horas. Usa &e/sb debt &apara ver tu deuda.'
+  loan-failed: '&cProceso de préstamo cancelado.'
+  loan-paid: '&aPagaste &e%amount%₯ &ahacia tu deuda.'
+  loan-cancelled: '&cProceso de préstamo cancelado.'
+  loan-disabled: '&cLos préstamos están desactivados.'
+  loan-amount-error: '&cEl monto debe estar entre &e%minloan%₯ &cy &e%maxloan%₯.'
+  debt-deducted: '&aSe dedujo &e%money%₯ &ade tu banco para pagar tu deuda.'
+  debt-cant-paid: '&c¡No tienes suficiente dinero para pagar tu deuda! Tu deuda aumentó en &e%money%₯.'
+  debt-payment-success: '&aPagaste &e%money%₯ &ahacia tu deuda.'
+  debt-paid: '&a¡Deuda saldada! Ya puedes solicitar otro préstamo.'
+  invalid-amount: '&cCantidad inválida.'
+  less-then-daily: '&cDebes pagar al menos &e%daily%₯ &cpara abono mínimo.'
   loan-agree:
-    - "&c------------------- &fDebt Details &c---------------------"
-    - "&6You have taken a loan of &c%total_debt%$&6 from the bank. You will be required to pay &c%every_payment%$ every &c%payment_interval% hours."
-    - "&6You can check and pay your debt using the &c/sb debt&6 command."
-    - "&6Failure to pay on time will increase your remaining debt by &c%every_payment%$ &6every &c%payment_interval% &6hours."
-    - "&6We hope you make timely payments. Good luck!"
-    - "&cImportant Note: &6Money should be in your bank account to pay your debt when time comes."
-
-physical-money:
-  enabled: true
-  item:
-    material: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTc2YmM2ODU0N2M3NmJhNDYyNTA4NTAyOTgwNDY0N2I4MmY4MTY3MDVjOGJiNjFlMzdkMTQ4NWE3NWM3MmM1ZiJ9fX0="
-    name: "&6Money Pile"
-    lore:
-    - "&7Money: &c%money_pile%"
-    - "&7Right click to deposit"
-    - "&7your money to bank account."
+  - '&c----------- Detalles del Préstamo -----------'
+  - '&6Préstamo total: &e%total_debt%₯'
+  - '&6Pago cada &e%payment_interval% horas&6: &c%every_payment%₯'
+  - '&6Usa &e/sb debt &6para ver y pagar tu deuda.'
+  - '&6Si no pagas a tiempo, tu deuda aumentará en &c%every_payment%₯.'
+  - '&c• El pago se toma automáticamente de tu BANCO.'
+  - '&c---------------------------------------------'
 
 gui:
-  bank-home-title: "&6Bank Account"
-  deposit-page-title: "&6Deposit Money"
-  withdraw-page-title: "&6Withdraw Money"
-  loan-page-title: "&6Loan Money"
-  debt-page-title: "&6Debt Info"
-  agree-page-title: "&6Agreement"
+  bank-home-title: '&6DrakesBank — Tu Cuenta'
+  deposit-page-title: '&6Depositar Dinero'
+  withdraw-page-title: '&6Retirar Dinero'
+  loan-page-title: '&6Solicitar Préstamo'
+  debt-page-title: '&6Mi Deuda'
+  agree-page-title: '&6Confirmar Préstamo'
 
-# Loan Settings
-# Loan term in days (7 days = 1 week). You can change this to 14 for 2 weeks, 30 for 1 month etc. This is for interest calculation.
-# Calculation will be like this: debt * interest / 100 * loan-term.
-# So if you have 500.000$ debt and 10% interest and 7 days loan-term you will pay 121.428$ interest for every day.
-# Total 850.000$ in 7 days.
-# Loan Permission: sbank.loan
+# --- PRÉSTAMOS --------------------------------------------
+# Requiere permiso: sbank.loan
+# El pago de interés se toma del banco automáticamente.
 loan:
-  enabled: true # If you turn this false or true you need to restart the server to apply changes
-  max-loan: 250000.0
+  enabled: true
+  max-loan: 500000.0
   min-loan: 1000.0
-  loan-interest: 1 # Por día; durante 7 días equivale a 7% total.
-  loan-term: 7
-  debt-time: 12 # In hours debt will be deducted every 12 hours
+  loan-interest: 20 # 20% del monto prestado = interés total a pagar
+  loan-term: 7 # período del préstamo en días
+  debt-time: 24 # se cobra interés parcial cada 24 horas
 
-# Interest Settings
-# Interest Permission: sbank.interest # Player must have this permission to get interest
-# Custom Interest Permission: sbank.interest.<percent>
+# --- INTERÉS EN DEPÓSITOS ---------------------------------
+# Requiere permiso: sbank.interest
+# 0.5% del balance bancario cada 24 horas — incentivo anti-inflacionario
+# (circular: el dinero no se crea, se redistribuye del pool de deudas)
 interest:
-  # Interest creates currency. Keep it disabled until the economy explicitly needs a controlled reward rate.
-  enabled: false
-  default-interest-rate: 10 # In percentage. If the player is online and the interest setting is enabled, they will receive this default percentage of their money at every interest-time, unless they have a sbank.interest.<percent> permission set.
-  interest-time: 12 # In hours interest will be calculated every 12 hours
-  last-interest-date: "2024-10-07 20:49:00" # Last interest info, DO NOT TOUCH, this will be change automatically
-  interest-message: "&6You got %interest% interest to your bank account."
+  enabled: true
+  interest-rate: 0.5 # bajado de 4: al 4% diario compuesto el saldo se duplicaba cada ~18 dias
+  interest-time: 24 # cada 24 horas
+  last-interest-date: '2026-09-12 20:40:55'
+  interest-message: '&a+&e%interest%₯ &ade interés acreditados a tu banco.'
 
-# Reserve funded by progressive wealth contributions and real debt repayments.
-# New loans cannot mint money: they are granted only when this reserve has funds.
+# Reserva que respalda los prestamos. Sin fondos aqui, un prestamo no puede crear dinero nuevo.
 economy-reserve:
-  balance: 0.0
+  balance: 5163781.5
   reserve-backed-loans: true
 
-# Progressive tax over stored bank balances. It never touches wallet, inventory or physical money.
-# The first cycle is scheduled after a full interval so enabling the module cannot charge on startup.
+# Impuesto progresivo sobre el saldo GUARDADO en el banco. No toca billetera ni inventario.
+# El primer ciclo se agenda despues de un intervalo completo, asi que activarlo no cobra al arrancar.
 wealth-tax:
   enabled: true
   interval-hours: 24
   protected-balance: 500000.0
   maximum-charge-per-cycle: 250000.0
   exempt-usernames: []
-  last-run: "2026-07-26 00:00:00"
-  message: "&6[DrakesBank] &eImpuesto bancario aplicado: &c-%money%"
+  last-run: '2026-09-13 00:19:07'
+  message: '&6[DrakesBank] &eImpuesto bancario aplicado: &c-%money%'
   tiers:
     first:
-      # 0.5% over the protected balance, up to 1,000,000 taxable currency.
+      # 0.5% sobre lo que exceda el saldo protegido, hasta 1.000.000.
       up-to: 1000000.0
       rate-percent: 0.5
     second:
-      # 1% over the next 4,000,000 taxable currency.
+      # 1% sobre los siguientes 4.000.000.
       up-to: 5000000.0
       rate-percent: 1.0
     high:
-      # 2% of any remaining taxable wealth.
+      # 2% sobre el resto de la riqueza gravable.
       up-to: -1
       rate-percent: 2.0
-
-npc-bankers:
-  enabled: false
-  npc-id: 0
-  command-message: "&6You can just access your bank with banker NPC"
-  bypass-permission: "sbank.bypass.banker"

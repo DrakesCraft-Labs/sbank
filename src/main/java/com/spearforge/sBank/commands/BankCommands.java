@@ -21,6 +21,17 @@ public class BankCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (sender.hasPermission("sbank.admin")) {
+                SBank.getPlugin().reloadConfig();
+                SBank.getGuiConfig().reloadConfig();
+                TextUtils.sendMessageWithPrefix(sender, SBank.getPlugin().getConfig().getString("messages.plugin-reloaded"));
+            } else {
+                TextUtils.sendMessageWithPrefix(sender, SBank.getPlugin().getConfig().getString("messages.no-permission"));
+            }
+            return true;
+        }
+
         if (sender instanceof Player){
             Player player = (Player) sender;
             if (player.hasPermission("sbank.use") || player.hasPermission("sbank.admin")){
@@ -32,15 +43,7 @@ public class BankCommands implements CommandExecutor {
                         player.openInventory(inventory);
                     }
                 } else if (args.length == 1){
-                    if (args[0].equalsIgnoreCase("reload")){
-                        if (player.hasPermission("sbank.admin")){
-                            SBank.getPlugin().reloadConfig();
-                            SBank.getGuiConfig().reloadConfig();
-                            TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.plugin-reloaded"));
-                        } else {
-                            TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.no-permission"));
-                        }
-                    } else if (args[0].equalsIgnoreCase("debt")){
+                    if (args[0].equalsIgnoreCase("debt")){
                         if (SBank.getPlugin().getConfig().getBoolean("npc-bankers.enabled") && !player.hasPermission(SBank.getPlugin().getConfig().getString("npc-bankers.bypass-permission"))){
                             TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("npc-bankers.command-message"));
                         } else {
@@ -55,17 +58,17 @@ public class BankCommands implements CommandExecutor {
                             }
                         }
                     } else if (Bukkit.getOfflinePlayer(args[0]) != null){ // check if player has a bank
-                            if (player.hasPermission("sbank.admin")) {
-                                Bank pBank = SBank.getDb().getBank(args[0]);
-                                if (pBank != null){
-                                    player.openInventory(AdminGUI.openPlayerBankGUI(pBank));
-                                } else {
-                                    TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.player-not-found"));
-                                }
+                        if (player.hasPermission("sbank.admin")) {
+                            Bank pBank = SBank.getDb().getBank(args[0]);
+                            if (pBank != null){
+                                player.openInventory(AdminGUI.openPlayerBankGUI(pBank));
                             } else {
-                                TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.no-permission"));
+                                TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.player-not-found"));
                             }
+                        } else {
+                            TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.no-permission"));
                         }
+                    }
                 }
             } else {
                 TextUtils.sendMessageWithPrefix(player, SBank.getPlugin().getConfig().getString("messages.no-permission"));

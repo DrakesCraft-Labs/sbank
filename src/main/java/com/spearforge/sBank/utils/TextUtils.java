@@ -80,7 +80,7 @@ public class TextUtils {
         return TextUtils.formatLore(lore, replacements);
     }
 
-    public static void sendMessageWithPrefix(Player player, String message){
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', SBank.getPlugin().getConfig().getString("messages.prefix")) + ChatColor.translateAlternateColorCodes('&',message));
+    public static void sendMessageWithPrefix(org.bukkit.command.CommandSender sender, String message){
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', SBank.getPlugin().getConfig().getString("messages.prefix")) + ChatColor.translateAlternateColorCodes('&',message));
     }
 }
