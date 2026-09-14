@@ -24,6 +24,9 @@ public class MoneyPileListener implements Listener {
                 || (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
+        if (!SBank.getPlugin().getConfig().getBoolean("physical-money.enabled", false)) {
+            return;
+        }
         Player player = e.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
