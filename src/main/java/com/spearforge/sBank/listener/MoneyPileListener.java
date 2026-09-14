@@ -32,7 +32,12 @@ public class MoneyPileListener implements Listener {
         }
 
         ItemMeta meta = item.getItemMeta();
-        if (meta == null || meta.getDisplayName() == null || !meta.getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', SBank.getPlugin().getConfig().getString("physical-money.item.name")))){
+        String configuredName = SBank.getPlugin().getConfig().getString("physical-money.item.name");
+        if (configuredName == null || meta == null || meta.getDisplayName() == null) {
+            return;
+        }
+        String expectedName = ChatColor.translateAlternateColorCodes('&', configuredName);
+        if (!meta.getDisplayName().equals(expectedName)) {
             return;
         }
 
