@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/sbank-logo.svg" width="640" alt="sBank" />
+  <img src="banner.svg" width="920" alt="sBank" />
 </p>
 
 # sBank
@@ -10,7 +10,7 @@
 > * 💬 **Discord Oficial**: [discord.gg/drakescraft](https://discord.gg/rv3vtXZTk7)
 > * 🌐 **Web & Guía**: [web.drakescraft.cl](https://web.drakescraft.cl) — 🛒 **Tienda**: [web.drakescraft.cl/store](https://web.drakescraft.cl/store.html)
 > 
-> *¡Juega con este addon y más de 80 expansiones optimizadas en vivo en nuestra network de supervivencia técnica!*
+> *¡Juega con este banco y más de 80 plugins y addons optimizados en vivo en nuestra network de supervivencia técnica!*
 
 ---
 
@@ -98,7 +98,7 @@ This repository is a fork of [xenrivehub/sbank](https://github.com/xenrivehub/sb
 
 ## ⚖️ Upstream Attribution & License / Licencia y Créditos
 
-- **Original Project / Upstream**: Slimefun4 Community Addon.
+- **Original Project / Upstream**: [xenrivehub/sbank](https://github.com/xenrivehub/sbank) (banking plugin for Vault; not a Slimefun addon).
 - **Port & Maintenance**: DrakesCraft Labs team (Compatibility for Paper / Purpur 1.21.11).
 - **License**: GPL-3.0 / MIT.
 - **Source Code**: [GitHub Repository](https://github.com/DrakesCraft-Labs/sbank)
