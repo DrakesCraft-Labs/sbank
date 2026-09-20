@@ -5,6 +5,7 @@ import com.spearforge.sBank.guis.AdminGUI;
 import com.spearforge.sBank.guis.BankGUI;
 import com.spearforge.sBank.guis.DebtGui;
 import com.spearforge.sBank.model.Bank;
+import com.spearforge.sBank.utils.MiscUtils;
 import com.spearforge.sBank.utils.TextUtils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -29,6 +30,19 @@ public class BankCommands implements CommandExecutor {
             } else {
                 TextUtils.sendMessageWithPrefix(sender, SBank.getPlugin().getConfig().getString("messages.no-permission"));
             }
+            return true;
+        }
+
+        // Ajuste administrativo desde consola o con sbank.admin: `sbank set|take|give <jugador> <monto> [motivo]`.
+        // Antes el unico camino era la AdminGUI en juego; sin esto no habia forma de corregir un saldo
+        // desde consola/SAORI (auditoria de economia 2026-09-20). Queda registrado en el audit log.
+        if (args.length >= 3 && (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("take")
+                || args[0].equalsIgnoreCase("give"))) {
+            if (!sender.hasPermission("sbank.admin")) {
+                TextUtils.sendMessageWithPrefix(sender, SBank.getPlugin().getConfig().getString("messages.no-permission"));
+                return true;
+            }
+            ajusteAdministrativo(sender, args);
             return true;
         }
 
@@ -77,6 +91,50 @@ public class BankCommands implements CommandExecutor {
 
 
         return true;
+    }
+
+    private void ajusteAdministrativo(CommandSender sender, String[] args) {
+        String objetivo = args[1];
+        double monto;
+        try {
+            monto = Double.parseDouble(args[2].replace(",", ""));
+        } catch (NumberFormatException e) {
+            sender.sendMessage("[sBank] Monto invalido: " + args[2]);
+            return;
+        }
+        if (monto < 0) {
+            sender.sendMessage("[sBank] El monto no puede ser negativo.");
+            return;
+        }
+        String motivo = args.length > 3 ? String.join(" ", java.util.Arrays.copyOfRange(args, 3, args.length)) : "sin motivo";
+
+        // Si el jugador esta conectado el saldo vivo es el de la cache; si no, el de la base.
+        Bank bank = SBank.getBanks().get(objetivo);
+        if (bank == null) {
+            try {
+                bank = SBank.getDb().getBank(objetivo);
+            } catch (java.sql.SQLException e) {
+                sender.sendMessage("[sBank] Error leyendo la base: " + e.getMessage());
+                return;
+            }
+        }
+        if (bank == null) {
+            sender.sendMessage("[sBank] " + objetivo + " no tiene cuenta bancaria.");
+            return;
+        }
+        double antes = bank.getBalance();
+        double despues;
+        switch (args[0].toLowerCase()) {
+            case "set" -> despues = monto;
+            case "take" -> despues = Math.max(0, antes - monto);
+            default -> despues = antes + monto;
+        }
+        bank.setBalance(despues);
+        boolean guardado = SBank.persistBank(bank);
+        SBank.getAuditLogger().record("ADMIN_" + args[0].toUpperCase(), bank.getUsername(), bank.getUniqueId(),
+                Math.abs(despues - antes), 0, 0, antes, despues, sender.getName() + ": " + motivo);
+        sender.sendMessage("[sBank] " + bank.getUsername() + ": " + MiscUtils.formatBalance(antes) + " -> "
+                + MiscUtils.formatBalance(despues) + (guardado ? "" : " (NO se pudo guardar en la base)"));
     }
 
 }
